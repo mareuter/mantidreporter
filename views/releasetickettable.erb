@@ -1,0 +1,15 @@
+<table>
+  <tr style="background-color: #4F81BD;"><th>Ticket</th><th>Summary</th></tr>
+  <% index = 0 %>
+  <% issues.each do |issue| %>
+  <% if index % 2 == 0 %>
+  <tr style="color:black; background-color:#D3DFEE;">
+  <% else %>
+  <tr>
+  <% end %>
+  <td><a rel="nofollow" class="external text" href="<%= issue.url %>"><%= issue.number %></a></td>
+  <td><%= issue.title %></td>
+  </tr> 
+  <% index += 1 %>
+  <% end %>
+</table>

@@ -1,0 +1,17 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>Milestone <%= milestone %></h1>
+    <h2>Status: Verify</h2>
+    <p>
+      <%= erb :testingtickettable, :locals => { :issues => open_prs } %>
+     </p>
+    <br>
+    <h2>Status: Verifying</h2>
+    <p>
+      <%= erb :testingtickettable, :locals => { :issues => taken_prs } %>
+     </p>
+  </body>
+</html>
+
