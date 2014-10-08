@@ -55,9 +55,7 @@ class Reports < Sinatra::Base
         scopes = auth_result.headers[:x_oauth_scopes].split(', ')
       end
       auth_result = JSON.parse(auth_result)
-      if scopes.include? 'user'
-        erb :reports, :locals => auth_result
-      end
+      erb :reports, :locals => auth_result
     end
   end
 
