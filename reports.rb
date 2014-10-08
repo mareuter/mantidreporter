@@ -55,7 +55,10 @@ class Reports < Sinatra::Base
         scopes = auth_result.headers[:x_oauth_scopes].split(', ')
       end
       auth_result = JSON.parse(auth_result)
-      erb :reports, :locals => auth_result
+
+      repoman = RepoManager.new(session[:access_token])
+      fullname = repoman.user_fullname(auth_result[:login])
+      erb :reports, :locals => { :fullname => fullname }
     end
   end
 
@@ -66,10 +69,10 @@ class Reports < Sinatra::Base
     complete_list = Array.new
 
     issues.each do |issue|
-      complete_list.push(Summary::Issues.new(issue[:number], issue[:user][:login], issue[:url], 
+      complete_list.push(Summary::Issues.new(issue[:number], issue[:user][:login], issue[:url],
                                              issue[:title]))
     end
-    complete_list.sort!  
+    complete_list.sort!
 
     erb :milestonetickets, :locals => { :milestone => MILESTONE, :issues => complete_list }
   end
@@ -84,7 +87,7 @@ class Reports < Sinatra::Base
       labels = issue[:labels]
       labels.each do |label|
         if KEYWORD == label[:name]
-          complete_list.push(Summary::Issues.new(issue[:number], issue[:user][:login], issue[:url], 
+          complete_list.push(Summary::Issues.new(issue[:number], issue[:user][:login], issue[:url],
                                                  issue[:title]))
         end
       end
@@ -98,22 +101,22 @@ class Reports < Sinatra::Base
     repoman = RepoManager.new(session[:access_token])
     pull_requests = repoman.pull_requests(REPOSITORY, MILESTONE)
 
-    open_prs = Array.new 
+    open_prs = Array.new
     taken_prs = Array.new
     pull_requests.each do |pull_request|
       creator = pull_request[:user]
       assignee = pull_request[:assignee]
       if assignee
-        taken_prs.push(Summary::PullRequests.new(pull_request[:number], 
+        taken_prs.push(Summary::PullRequests.new(pull_request[:number],
                                                  creator[:login],
-                                                 pull_request[:url], 
-                                                 pull_request[:title], 
+                                                 pull_request[:url],
+                                                 pull_request[:title],
                                                  assignee[:login]))
       else
-        open_prs.push(Summary::PullRequests.new(pull_request[:number], 
-                                                creator[:login], 
-                                                pull_request[:url], 
-                                                pull_request[:title], 
+        open_prs.push(Summary::PullRequests.new(pull_request[:number],
+                                                creator[:login],
+                                                pull_request[:url],
+                                                pull_request[:title],
                                                 NOONE))
       end
     end
@@ -139,4 +142,3 @@ class Reports < Sinatra::Base
   end
 
 end
-

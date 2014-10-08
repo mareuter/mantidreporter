@@ -11,7 +11,7 @@ class RepoManager < Object
 
   def issues(repo_name, milestone_name)
     setup(repo_name, milestone_name)
-    return @client.list_issues(@repo_name, :milestone => @ms_number, :state => "closed") 
+    return @client.list_issues(@repo_name, :milestone => @ms_number, :state => "closed")
   end
 
   def pull_requests(repo_name, milestone_name)
@@ -28,14 +28,19 @@ class RepoManager < Object
     return pull_requests
   end
 
-  private 
+  def user_fullname(login)
+    response = @client.user(login)
+    return response[:name]
+  end
+
+  private
     def setup(repo_name, milestone_name)
       if repo_name != @repo_name
         @repo_name = repo_name
         # Get all milestones
         @milestones = @client.list_milestones(@repo_name)
         @milestones.concat(@client.list_milestones(@repo_name, :state => "closed"))
-        
+
       end
       find_ms_number(milestone_name)
     end
